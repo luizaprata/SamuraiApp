@@ -12,18 +12,33 @@ namespace SamuraiApp.UI
         private static void Main(string[] args)
         {
             _context.Database.EnsureCreated();
-            GetSamurais("Before Add");
-            AddSamurai();
-            GetSamurais("After Add");
+            //GetSamurais("Before Add");
+            //AddSamuraisByName("Shimada", "Okamoto", "Kikuchio", "Hayashida");
+            //AddVariousTypes();
+            //GetSamurais("After Add");
+            //GetBattles("After Add");
+            QueryFilters("Misu");
             Console.Write("Press any key...");
             Console.ReadKey();
 
         }
 
-        private static void AddSamurai()
+        private static void AddVariousTypes()
         {
-            var samurai = new Samurai { Name = "Sampson" };
-            _context.Samurais.Add(samurai);
+            _context.AddRange(
+                new Samurai { Name = "Misu" },
+                new Battle { Name = "Battle of Okinawa" },
+                new Battle { Name = "Battle of Sekigahara" }
+                );
+            _context.SaveChanges();
+        }
+
+        private static void AddSamuraisByName(params string[] names)
+        {
+            foreach(string name in names)
+            {
+                _context.Samurais.Add(new Samurai { Name = name });
+            }
             _context.SaveChanges();
         }
 
@@ -35,6 +50,21 @@ namespace SamuraiApp.UI
             {
                 Console.WriteLine(samurai.Name);
             }
+        }
+
+        private static void GetBattles(string text)
+        {
+            var battles = _context.Battles.ToList();
+            Console.WriteLine($"{text}: Battles count is {battles.Count}");
+            foreach (var battle in battles)
+            {
+                Console.WriteLine(battle.Name);
+            }
+        }
+
+        private static void QueryFilters(string name)
+        {
+            var samurais = _context.Samurais.Where(s => s.Name.Contains(name)).ToList();
         }
     }
 }
