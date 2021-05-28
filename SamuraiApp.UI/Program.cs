@@ -15,9 +15,15 @@ namespace SamuraiApp.UI
             //GetSamurais("Before Add");
             //AddSamuraisByName("Shimada", "Okamoto", "Kikuchio", "Hayashida");
             //AddVariousTypes();
-            //GetSamurais("After Add");
             //GetBattles("After Add");
-            QueryFilters("Misu");
+            //QueryFilters("Misu");
+
+            // RetrieveAndUpdateSamurai();
+
+            //RetrieveAndUpdateMultipleSamurais();
+            RetrieveAndDeleteSamurai();
+            GetSamurais("After Add");
+
             Console.Write("Press any key...");
             Console.ReadKey();
 
@@ -65,6 +71,32 @@ namespace SamuraiApp.UI
         private static void QueryFilters(string name)
         {
             var samurais = _context.Samurais.Where(s => s.Name.Contains(name)).ToList();
+        }
+
+        private static void QueryAggregates(string name)
+        {
+            var samurai = _context.Samurais.FirstOrDefault(s => s.Name.Contains(name));
+        }
+
+        private static void RetrieveAndUpdateSamurai()
+        {
+            var samurai = _context.Samurais.FirstOrDefault();
+            samurai.Name += "San";
+            _context.SaveChanges();
+        }
+
+        private static void RetrieveAndUpdateMultipleSamurais()
+        {
+            var samurais = _context.Samurais.Skip(1).Take(4).ToList();
+            samurais.ForEach((samurai)=>samurai.Name += "San");
+            _context.SaveChanges();
+        }
+
+        private static void RetrieveAndDeleteSamurai()
+        {
+            var samurai = _context.Samurais.Find(4);
+            _context.Samurais.Remove(samurai);
+            _context.SaveChanges();
         }
     }
 }
