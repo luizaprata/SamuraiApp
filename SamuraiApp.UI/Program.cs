@@ -1,6 +1,7 @@
 ﻿using SamuraiApp.Data;
 using SamuraiApp.Domain;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SamuraiApp.UI
@@ -21,13 +22,22 @@ namespace SamuraiApp.UI
             // RetrieveAndUpdateSamurai();
 
             //RetrieveAndUpdateMultipleSamurais();
-            RetrieveAndDeleteSamurai();
+            //RetrieveAndDeleteSamurai();
+
+            //InsertNewSamuraiWithAQuote();
+
+            //AddQuoteToExistingSamuraiWhileTracked();
+
+            AddQuoteToExistingSamuraiNotTracked();
+
             GetSamurais("After Add");
 
             Console.Write("Press any key...");
             Console.ReadKey();
 
         }
+
+        
 
         private static void AddVariousTypes()
         {
@@ -96,6 +106,46 @@ namespace SamuraiApp.UI
         {
             var samurai = _context.Samurais.Find(4);
             _context.Samurais.Remove(samurai);
+            _context.SaveChanges();
+        }
+
+        private static void InsertNewSamuraiWithAQuote()
+        {
+            var samurai = new Samurai
+            {
+                Name = "Kambei Shimada",
+                Quotes = new List<Quote>
+               {
+                   new Quote { Text = "I've come to save you!"},
+                   new Quote { Text = "Watch out for my sharp sword!"}
+               }
+            };
+            _context.Samurais.Add(samurai);
+            _context.SaveChanges();
+        }
+
+        private static void AddQuoteToExistingSamuraiNotTracked(int samuraiId)
+        {
+            var samurai = _context.Samurais.Find(samuraiId);
+            samurai.Quotes.Add(new Quote
+            {
+                Text = "Will you feed me dinner?"
+            });
+
+            using(var newContext = new SamuraiContext())
+            {
+                newContext.Samurais.Update(samurai);
+                newContext.SaveChanges();
+            }
+        }
+
+        private static void AddQuoteToExistingSamuraiWhileTracked()
+        {
+            var samurai = _context.Samurais.FirstOrDefault();
+            samurai.Quotes.Add(new Quote
+            {
+                Text = "I bet you are happy!"
+            });
             _context.SaveChanges();
         }
     }
