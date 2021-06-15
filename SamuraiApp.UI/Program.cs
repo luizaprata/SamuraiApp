@@ -28,7 +28,8 @@ namespace SamuraiApp.UI
 
             //AddQuoteToExistingSamuraiWhileTracked();
 
-            AddQuoteToExistingSamuraiNotTracked();
+            EagerLoadSamuraiWithQuotes();
+
 
             GetSamurais("After Add");
 
@@ -109,7 +110,7 @@ namespace SamuraiApp.UI
             _context.SaveChanges();
         }
 
-        private static void InsertNewSamuraiWithAQuote()
+        private static void InsertNewSamuraiManyQuotes()
         {
             var samurai = new Samurai
             {
@@ -134,7 +135,7 @@ namespace SamuraiApp.UI
 
             using(var newContext = new SamuraiContext())
             {
-                newContext.Samurais.Update(samurai);
+                newContext.Samurais.Attach(samurai); //attach improves performance
                 newContext.SaveChanges();
             }
         }
@@ -148,5 +149,12 @@ namespace SamuraiApp.UI
             });
             _context.SaveChanges();
         }
+
+        private static void EagerLoadSamuraiWithQuotes()
+        {
+            var samuraiWithQuotes = _context.Samurais.Includes(s => s.Quotes);
+        }
+
+
     }
 }
